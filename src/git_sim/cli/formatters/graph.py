@@ -243,24 +243,27 @@ class CommitGraphRenderer:
             message += "..."
 
         # Find branch labels for this commit
-        labels: list[str] = []
+        labels: list[Text] = []
         for branch, tip_sha in graph.branch_tips.items():
             if tip_sha == sha:
                 color = branch_colors.get(branch, "cyan")
                 if sha == graph.head_sha:
-                    labels.append(f"[bold {color}]HEAD -> {branch}[/bold {color}]")
+                    labels.append(Text(f"HEAD -> {branch}", style=f"bold {color}"))
                 else:
-                    labels.append(f"[{color}]{branch}[/{color}]")
+                    labels.append(Text(branch, style=color))
 
         # Build the info portion
         if sha in highlight_shas:
-            line.append(f"[bold yellow]{short_sha}[/bold yellow] ")
+            line.append(f"{short_sha} ", style="bold yellow")
         else:
-            line.append(f"[yellow]{short_sha}[/yellow] ")
+            line.append(f"{short_sha} ", style="yellow")
 
         if labels:
             line.append("(")
-            line.append(Text.from_markup(", ".join(labels)))
+            for i, label in enumerate(labels):
+                if i > 0:
+                    line.append(", ")
+                line.append(label)
             line.append(") ")
 
         line.append(message, style="white")

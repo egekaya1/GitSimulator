@@ -97,7 +97,9 @@ def status() -> None:
 
     console.print("\n[bold]Recent commits:[/bold]")
     graph_renderer = CommitGraphRenderer(console)
-    graph = repo.build_graph([repo.head_sha], max_commits=10)
+    # Show all branches in status
+    refs = [branch.head_sha for branch in repo.get_branches()]
+    graph = repo.build_graph(refs, max_commits=10)
     graph_renderer.render(graph)
 
 
@@ -113,11 +115,18 @@ def log(
         "-n",
         help="Maximum number of commits to show",
     ),
+    all_branches: bool = typer.Option(
+        False,
+        "--all",
+        "-a",
+        help="Show all branches (like git log --all --graph)",
+    ),
 ) -> None:
     """
     Show commit log with graph visualization.
 
     Similar to `git log --graph` but with enhanced visualization.
+    Use --all to show all branches like `git log --all --graph`.
     """
     from git_sim.cli.formatters.graph import CommitGraphRenderer
     from git_sim.core.exceptions import NotARepositoryError, RefNotFoundError
@@ -125,7 +134,12 @@ def log(
 
     try:
         repo = Repository(".")
-        graph = repo.build_graph([ref], max_commits=max_count)
+        if all_branches:
+            # Include all branch tips
+            refs = [branch.head_sha for branch in repo.get_branches()]
+            graph = repo.build_graph(refs, max_commits=max_count)
+        else:
+            graph = repo.build_graph([ref], max_commits=max_count)
     except NotARepositoryError as e:
         console.print(f"[red]Error: {e}[/red]")
         raise typer.Exit(1) from e

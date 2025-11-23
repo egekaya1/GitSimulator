@@ -473,7 +473,7 @@ class Repository:
         Build a CommitGraph from the given refs.
 
         Args:
-            refs: List of refs to include in the graph.
+            refs: List of refs (branch names, tags, or SHAs) to include in the graph.
             max_commits: Maximum number of commits to include.
 
         Returns:
@@ -483,13 +483,11 @@ class Repository:
         graph.head_sha = self.head_sha
         graph.head_branch = self.head_branch
 
-        # Add branch tips
-        for ref in refs:
-            try:
-                commit = self.get_commit(ref)
-                graph.branch_tips[ref] = commit.sha
-            except RefNotFoundError:
-                pass
+        # Add branch tips - map branch names to their SHAs
+        branches = self.get_branches()
+        for branch in branches:
+            if branch.head_sha in refs or branch.name in refs:
+                graph.branch_tips[branch.name] = branch.head_sha
 
         # Walk commits from all refs
         seen: set[str] = set()
