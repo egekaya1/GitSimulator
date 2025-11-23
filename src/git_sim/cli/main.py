@@ -24,9 +24,12 @@ plugin_app = typer.Typer(help="Manage git-sim plugins")
 app.add_typer(plugin_app, name="plugin")
 
 console = Console()
+
+
 def safe_style_label(style: str, text: str) -> str:
     """Return Rich markup with style if provided, else plain text."""
     return f"[{style}]{text}[/{style}]" if style else text
+
 
 # Typer argument constants (avoid function calls directly in default parameters per Ruff B008)
 COMMITS_ARG = typer.Argument(..., help="Commits to cherry-pick")
