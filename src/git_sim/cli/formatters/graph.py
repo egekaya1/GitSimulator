@@ -132,10 +132,11 @@ class CommitGraphRenderer:
         adjacency: dict[str, list[str]] = {sha: [] for sha in graph.commits}
 
         for child_sha, parent_sha in graph.edges:
-            if parent_sha in indegree:
-                indegree[parent_sha] += 1
-            if child_sha in adjacency:
-                adjacency[child_sha].append(parent_sha)
+            # Skip edges where parent is outside truncated commit set
+            if child_sha not in adjacency or parent_sha not in indegree:
+                continue
+            indegree[parent_sha] += 1
+            adjacency[child_sha].append(parent_sha)
 
         # Queue of tips (no children referencing them)
         tips: list[str] = [sha for sha, deg in indegree.items() if deg == 0]
@@ -153,6 +154,8 @@ class CommitGraphRenderer:
             _, sha = heapq.heappop(heap)
             result.append(sha)
             for parent in adjacency.get(sha, []):
+                if parent not in indegree:
+                    continue
                 indegree[parent] -= 1
                 if indegree[parent] == 0:
                     heapq.heappush(heap, (-graph.commits[parent].timestamp, parent))

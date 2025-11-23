@@ -24,6 +24,9 @@ plugin_app = typer.Typer(help="Manage git-sim plugins")
 app.add_typer(plugin_app, name="plugin")
 
 console = Console()
+def safe_style_label(style: str, text: str) -> str:
+    """Return Rich markup with style if provided, else plain text."""
+    return f"[{style}]{text}[/{style}]" if style else text
 
 # Typer argument constants (avoid function calls directly in default parameters per Ruff B008)
 COMMITS_ARG = typer.Argument(..., help="Commits to cherry-pick")
@@ -86,7 +89,8 @@ def status() -> None:
     for branch in repo.get_branches():
         prefix = "* " if branch.name == repo.head_branch else "  "
         style = "bold green" if branch.name == repo.head_branch else ""
-        console.print(f"{prefix}[{style}]{branch.name}[/{style}] ({branch.head_sha[:7]})")
+        branch_label = safe_style_label(style, branch.name)
+        console.print(f"{prefix}{branch_label} ({branch.head_sha[:7]})")
 
     console.print("\n[bold]Recent commits:[/bold]")
     graph_renderer = CommitGraphRenderer(console)
