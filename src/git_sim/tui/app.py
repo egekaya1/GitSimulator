@@ -106,12 +106,12 @@ class GitSimApp(App[None]):  # Provide concrete generic parameter for mypy
 
     #graph-before {
         height: 50%;
-        border: solid dim;
+        border: solid gray;
     }
 
     #graph-after {
         height: 50%;
-        border: solid dim;
+        border: solid gray;
     }
 
     #conflict-list {

@@ -29,8 +29,11 @@ def test_soft_restore_moves_head_preserves_working(git_repo: Path):
     # Make another commit after snapshot
     (git_repo / "extra.txt").write_text("Extra content\n")
     import subprocess
+
     subprocess.run(["git", "add", "extra.txt"], cwd=git_repo, capture_output=True, check=True)
-    subprocess.run(["git", "commit", "-m", "Add extra"], cwd=git_repo, capture_output=True, check=True)
+    subprocess.run(
+        ["git", "commit", "-m", "Add extra"], cwd=git_repo, capture_output=True, check=True
+    )
 
     # Soft restore
     ok, _ = mgr.restore(snap.id, mode="soft")

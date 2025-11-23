@@ -14,24 +14,16 @@ class TestConflictDetector:
         return ConflictDetector()
 
     def test_no_conflict_disjoint_files(self, detector: ConflictDetector):
-        our_changes = [
-            FileChange(path="file_a.txt", change_type=ChangeType.MODIFY)
-        ]
-        their_changes = [
-            FileChange(path="file_b.txt", change_type=ChangeType.MODIFY)
-        ]
+        our_changes = [FileChange(path="file_a.txt", change_type=ChangeType.MODIFY)]
+        their_changes = [FileChange(path="file_b.txt", change_type=ChangeType.MODIFY)]
 
         conflicts = detector.detect_conflicts(our_changes, their_changes)
 
         assert len(conflicts) == 0
 
     def test_no_conflict_both_delete(self, detector: ConflictDetector):
-        our_changes = [
-            FileChange(path="file.txt", change_type=ChangeType.DELETE)
-        ]
-        their_changes = [
-            FileChange(path="file.txt", change_type=ChangeType.DELETE)
-        ]
+        our_changes = [FileChange(path="file.txt", change_type=ChangeType.DELETE)]
+        their_changes = [FileChange(path="file.txt", change_type=ChangeType.DELETE)]
 
         conflicts = detector.detect_conflicts(our_changes, their_changes)
 
@@ -80,12 +72,8 @@ class TestConflictDetector:
         assert len(conflicts) == 0
 
     def test_conflict_delete_modify(self, detector: ConflictDetector):
-        our_changes = [
-            FileChange(path="file.txt", change_type=ChangeType.DELETE)
-        ]
-        their_changes = [
-            FileChange(path="file.txt", change_type=ChangeType.MODIFY)
-        ]
+        our_changes = [FileChange(path="file.txt", change_type=ChangeType.DELETE)]
+        their_changes = [FileChange(path="file.txt", change_type=ChangeType.MODIFY)]
 
         conflicts = detector.detect_conflicts(our_changes, their_changes)
 
@@ -94,12 +82,8 @@ class TestConflictDetector:
         assert "delete" in conflicts[0].description.lower()
 
     def test_conflict_modify_delete(self, detector: ConflictDetector):
-        our_changes = [
-            FileChange(path="file.txt", change_type=ChangeType.MODIFY)
-        ]
-        their_changes = [
-            FileChange(path="file.txt", change_type=ChangeType.DELETE)
-        ]
+        our_changes = [FileChange(path="file.txt", change_type=ChangeType.MODIFY)]
+        their_changes = [FileChange(path="file.txt", change_type=ChangeType.DELETE)]
 
         conflicts = detector.detect_conflicts(our_changes, their_changes)
 

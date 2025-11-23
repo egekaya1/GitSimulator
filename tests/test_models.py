@@ -1,6 +1,5 @@
 """Tests for data models."""
 
-
 from git_sim.core.models import (
     ChangeType,
     CommitGraph,
@@ -204,16 +203,31 @@ class TestCommitGraph:
 
         # Build a simple chain: c3 -> c2 -> c1
         c1 = CommitInfo(
-            sha="c1", message="C1", author="", author_email="",
-            timestamp=1, parent_shas=(), tree_sha="",
+            sha="c1",
+            message="C1",
+            author="",
+            author_email="",
+            timestamp=1,
+            parent_shas=(),
+            tree_sha="",
         )
         c2 = CommitInfo(
-            sha="c2", message="C2", author="", author_email="",
-            timestamp=2, parent_shas=("c1",), tree_sha="",
+            sha="c2",
+            message="C2",
+            author="",
+            author_email="",
+            timestamp=2,
+            parent_shas=("c1",),
+            tree_sha="",
         )
         c3 = CommitInfo(
-            sha="c3", message="C3", author="", author_email="",
-            timestamp=3, parent_shas=("c2",), tree_sha="",
+            sha="c3",
+            message="C3",
+            author="",
+            author_email="",
+            timestamp=3,
+            parent_shas=("c2",),
+            tree_sha="",
         )
 
         graph.add_commit(c1)
@@ -236,8 +250,13 @@ class TestRebaseSimulation:
         step = RebaseStep(
             original_sha="abc123",
             commit_info=CommitInfo(
-                sha="abc123", message="Test", author="", author_email="",
-                timestamp=1, parent_shas=(), tree_sha="",
+                sha="abc123",
+                message="Test",
+                author="",
+                author_email="",
+                timestamp=1,
+                parent_shas=(),
+                tree_sha="",
             ),
             conflicts=[conflict],
         )
@@ -255,8 +274,13 @@ class TestRebaseSimulation:
         step = RebaseStep(
             original_sha="abc123",
             commit_info=CommitInfo(
-                sha="abc123", message="Test", author="", author_email="",
-                timestamp=1, parent_shas=(), tree_sha="",
+                sha="abc123",
+                message="Test",
+                author="",
+                author_email="",
+                timestamp=1,
+                parent_shas=(),
+                tree_sha="",
             ),
         )
         sim = RebaseSimulation(
@@ -271,12 +295,22 @@ class TestRebaseSimulation:
 
     def test_commits_to_replay(self):
         c1 = CommitInfo(
-            sha="c1", message="C1", author="", author_email="",
-            timestamp=1, parent_shas=(), tree_sha="",
+            sha="c1",
+            message="C1",
+            author="",
+            author_email="",
+            timestamp=1,
+            parent_shas=(),
+            tree_sha="",
         )
         c2 = CommitInfo(
-            sha="c2", message="C2", author="", author_email="",
-            timestamp=2, parent_shas=(), tree_sha="",
+            sha="c2",
+            message="C2",
+            author="",
+            author_email="",
+            timestamp=2,
+            parent_shas=(),
+            tree_sha="",
         )
 
         steps = [
@@ -298,12 +332,22 @@ class TestRebaseSimulation:
 
     def test_skipped_commits(self):
         c1 = CommitInfo(
-            sha="c1", message="C1", author="", author_email="",
-            timestamp=1, parent_shas=(), tree_sha="",
+            sha="c1",
+            message="C1",
+            author="",
+            author_email="",
+            timestamp=1,
+            parent_shas=(),
+            tree_sha="",
         )
         c2 = CommitInfo(
-            sha="c2", message="C2", author="", author_email="",
-            timestamp=2, parent_shas=(), tree_sha="",
+            sha="c2",
+            message="C2",
+            author="",
+            author_email="",
+            timestamp=2,
+            parent_shas=(),
+            tree_sha="",
         )
 
         steps = [

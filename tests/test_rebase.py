@@ -30,27 +30,21 @@ class TestRebaseSimulatorValidation:
         assert len(errors) == 0
 
     def test_validate_source_not_found(self, repository: Repository):
-        simulator = RebaseSimulator(
-            repository, source="nonexistent", onto="main"
-        )
+        simulator = RebaseSimulator(repository, source="nonexistent", onto="main")
         errors, warnings = simulator.validate()
 
         assert len(errors) == 1
         assert "nonexistent" in errors[0]
 
     def test_validate_onto_not_found(self, repository: Repository):
-        simulator = RebaseSimulator(
-            repository, source="HEAD", onto="nonexistent"
-        )
+        simulator = RebaseSimulator(repository, source="HEAD", onto="nonexistent")
         errors, warnings = simulator.validate()
 
         assert len(errors) == 1
         assert "nonexistent" in errors[0]
 
     def test_validate_same_commit_warning(self, repository: Repository):
-        simulator = RebaseSimulator(
-            repository, source="HEAD", onto="HEAD"
-        )
+        simulator = RebaseSimulator(repository, source="HEAD", onto="HEAD")
         errors, warnings = simulator.validate()
 
         assert len(errors) == 0
@@ -168,25 +162,23 @@ class TestRebaseSimulatorRun:
     """Tests for the run() method with validation."""
 
     def test_run_with_invalid_source(self, repository: Repository):
-        simulator = RebaseSimulator(
-            repository, source="nonexistent", onto="main"
-        )
+        simulator = RebaseSimulator(repository, source="nonexistent", onto="main")
 
         with pytest.raises(SimulationError):
             simulator.run()
 
     def test_run_preserves_warnings(self, repository: Repository):
         # Rebase HEAD onto itself should produce a warning
-        simulator = RebaseSimulator(
-            repository, source="HEAD", onto="HEAD"
-        )
+        simulator = RebaseSimulator(repository, source="HEAD", onto="HEAD")
 
         # This will produce warnings but not errors
         with contextlib.suppress(SimulationError):
             simulator.run()  # May fail for other reasons
 
         # Check warnings were recorded
-        assert any("same commit" in w.lower() for w in simulator.warnings), "Expected same commit warning to be preserved"
+        assert any("same commit" in w.lower() for w in simulator.warnings), (
+            "Expected same commit warning to be preserved"
+        )
 
 
 class TestConflictPrediction:

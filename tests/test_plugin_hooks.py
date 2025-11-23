@@ -46,7 +46,9 @@ class RecordingHook(HookPlugin):
         kwargs["_hook_marker"] = True
         return kwargs
 
-    def override_simulation(self, repo: Repository, command: str, **kwargs: Any) -> SimulationResult | None:  # type: ignore[override]
+    def override_simulation(
+        self, repo: Repository, command: str, **kwargs: Any
+    ) -> SimulationResult | None:  # type: ignore[override]
         if self._override and command == "merge":
             self._record.append(f"override:{command}")
             # Provide a synthetic result
@@ -66,7 +68,9 @@ class RecordingHook(HookPlugin):
             )
         return None
 
-    def post_simulate(self, repo: Repository, command: str, result: SimulationResult) -> SimulationResult:  # type: ignore[override]
+    def post_simulate(
+        self, repo: Repository, command: str, result: SimulationResult
+    ) -> SimulationResult:  # type: ignore[override]
         self._record.append(f"post:{command}")
         return result
 

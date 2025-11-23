@@ -30,12 +30,22 @@ def _run(repo: Path, args: list[str]):
 
 
 def test_detached_head_status_and_log(git_repo: Path) -> None:
-    commits = subprocess.run(
-        ["git", "rev-list", "--max-count=2", "HEAD"], cwd=git_repo, capture_output=True, check=True
-    ).stdout.decode().strip().splitlines()
+    commits = (
+        subprocess.run(
+            ["git", "rev-list", "--max-count=2", "HEAD"],
+            cwd=git_repo,
+            capture_output=True,
+            check=True,
+        )
+        .stdout.decode()
+        .strip()
+        .splitlines()
+    )
     assert len(commits) == 2
     second_commit = commits[-1]
-    subprocess.run(["git", "checkout", second_commit], cwd=git_repo, capture_output=True, check=True)
+    subprocess.run(
+        ["git", "checkout", second_commit], cwd=git_repo, capture_output=True, check=True
+    )
     res_status = _run(git_repo, ["status"])
     assert res_status.exit_code == 0, res_status.output
     res_log = _run(git_repo, ["log", "-n", "1"])
@@ -43,9 +53,16 @@ def test_detached_head_status_and_log(git_repo: Path) -> None:
 
 
 def test_root_commit_diff(git_repo: Path) -> None:
-    root = subprocess.run(
-        ["git", "rev-list", "--max-parents=0", "HEAD"], cwd=git_repo, capture_output=True, check=True
-    ).stdout.decode().strip()
+    root = (
+        subprocess.run(
+            ["git", "rev-list", "--max-parents=0", "HEAD"],
+            cwd=git_repo,
+            capture_output=True,
+            check=True,
+        )
+        .stdout.decode()
+        .strip()
+    )
     res = _run(git_repo, ["diff", root])
     assert res.exit_code == 0, res.output
     assert "Commit:" in res.output
@@ -66,9 +83,16 @@ def test_sim_rebase_variant(branched_repo: Path) -> None:
 
 
 def test_cherry_pick_graph_enabled(branched_repo: Path) -> None:
-    commit = subprocess.run(
-        ["git", "rev-list", "feature", "--max-count=1"], cwd=branched_repo, capture_output=True, check=True
-    ).stdout.decode().strip()
+    commit = (
+        subprocess.run(
+            ["git", "rev-list", "feature", "--max-count=1"],
+            cwd=branched_repo,
+            capture_output=True,
+            check=True,
+        )
+        .stdout.decode()
+        .strip()
+    )
     res = _run(branched_repo, ["cherry-pick", commit])  # graph enabled by default
     assert res.exit_code == 0, res.output
     assert "Cherry-Pick Summary" in res.output
@@ -93,6 +117,7 @@ def test_snapshot_hard_restore(git_repo: Path) -> None:
     list_res = _run(git_repo, ["snapshot", "list"])
     assert list_res.exit_code == 0, list_res.output
     import re
+
     snap_id = ""
     # Look for hex id followed by space and 'smoke'
     pattern = re.compile(r"[│|]\s*([0-9a-f]{8,12})\s*[│|]\s*smoke\b")
