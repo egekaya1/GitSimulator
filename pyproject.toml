@@ -1,6 +1,6 @@
 [project]
 name = "gitsimulator"
-version = "1.0.7"
+version = "1.0.9"
 description = "Git simulation and visualization engine - dry run dangerous Git commands with visual feedback before executing"
 readme = "README.md"
 requires-python = ">=3.11"
