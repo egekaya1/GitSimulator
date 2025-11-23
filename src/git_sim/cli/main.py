@@ -1,6 +1,5 @@
 """Main CLI entry point for git-sim."""
 
-
 import typer
 from rich.console import Console
 from rich.panel import Panel

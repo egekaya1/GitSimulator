@@ -1,6 +1,5 @@
 """Reset simulation engine."""
 
-
 from git_sim.core.models import (
     CommitGraph,
     CommitInfo,

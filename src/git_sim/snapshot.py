@@ -345,7 +345,9 @@ class SnapshotManager:
             capture_output=True,
             check=True,
         )
-        _sha = result.stdout.decode().strip()  # Value not currently used; retained for potential future validation
+        _sha = (
+            result.stdout.decode().strip()
+        )  # Value not currently used; retained for potential future validation
 
         # Get the reflog message
         result = subprocess.run(

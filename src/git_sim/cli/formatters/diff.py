@@ -1,6 +1,5 @@
 """Diff rendering for git-sim CLI."""
 
-
 from rich.console import Console, RenderableType
 from rich.panel import Panel
 from rich.syntax import Syntax

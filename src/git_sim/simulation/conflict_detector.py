@@ -1,6 +1,5 @@
 """Conflict detection heuristics for git-sim."""
 
-
 from git_sim.core.models import (
     ChangeType,
     ConflictSeverity,
@@ -120,8 +119,11 @@ class ConflictDetector:
         # One side deletes while the other modifies/adds - handled by specialized detector
         # Skip generic analysis here to avoid duplicate conflicts.
         if (
-            (our_fc.change_type == ChangeType.DELETE and their_fc.change_type in (ChangeType.MODIFY, ChangeType.ADD))
-            or (their_fc.change_type == ChangeType.DELETE and our_fc.change_type in (ChangeType.MODIFY, ChangeType.ADD))
+            our_fc.change_type == ChangeType.DELETE
+            and their_fc.change_type in (ChangeType.MODIFY, ChangeType.ADD)
+        ) or (
+            their_fc.change_type == ChangeType.DELETE
+            and our_fc.change_type in (ChangeType.MODIFY, ChangeType.ADD)
         ):
             return None
 

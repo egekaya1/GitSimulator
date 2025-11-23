@@ -258,9 +258,9 @@ class GitSimApp(App[None]):  # Provide concrete generic parameter for mypy
         """Format commit graph for display."""
         lines: list[str] = []
         # Simple topological display
-        sorted_commits = sorted(
-            graph.commits.values(), key=lambda c: c.timestamp, reverse=True
-        )[:15]
+        sorted_commits = sorted(graph.commits.values(), key=lambda c: c.timestamp, reverse=True)[
+            :15
+        ]
 
         for commit in sorted_commits:
             branch_labels: list[str] = [

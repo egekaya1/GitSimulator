@@ -1,6 +1,5 @@
 """Rebase command for git-sim CLI."""
 
-
 import typer
 from rich.console import Console
 from rich.panel import Panel

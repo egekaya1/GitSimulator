@@ -4,12 +4,17 @@ import hashlib
 import io
 import re
 from re import Match, Pattern
+from typing import TYPE_CHECKING
 
 from dulwich.objects import Blob, Commit
 from dulwich.patch import write_tree_diff
 from dulwich.repo import Repo
 
 from git_sim.core.models import CommitDiff, DiffHunk, FileChange
+
+# Type hint for circular import
+if TYPE_CHECKING:
+    from git_sim.core.repository import Repository
 
 
 class DiffAnalyzer:
@@ -385,10 +390,3 @@ class DiffAnalyzer:
                 patch_ids.add(patch_id)
 
         return patch_ids
-
-
-from typing import TYPE_CHECKING
-
-# Type hint for circular import
-if TYPE_CHECKING:  # noqa: E402
-    from git_sim.core.repository import Repository

@@ -76,9 +76,9 @@ class Repository:
                     return ref_bytes
             except KeyError:
                 pass
-        
+
         # Try as a short SHA (7+ characters)
-        if len(ref_or_sha) >= 7 and all(c in '0123456789abcdef' for c in ref_or_sha.lower()):
+        if len(ref_or_sha) >= 7 and all(c in "0123456789abcdef" for c in ref_or_sha.lower()):
             prefix = ref_or_sha.lower()
             matches = []
             for sha in self._repo.object_store:
@@ -90,7 +90,7 @@ class Repository:
                             matches.append(sha)
                     except (KeyError, AttributeError):
                         continue
-            
+
             if len(matches) == 1:
                 return matches[0]
             elif len(matches) > 1:
