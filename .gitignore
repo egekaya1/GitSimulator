@@ -90,3 +90,6 @@ Thumbs.db
 # ----------------------------------------
 git_sim/demo_output/
 git_sim/temp/
+
+# GitSim runtime data (snapshots)
+.git-sim/

@@ -1,0 +1,92 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'pyproject.toml'
+
+jobs:
+  check-version:
+    name: Check Version Change
+    runs-on: ubuntu-latest
+    outputs:
+      version_changed: ${{ steps.version.outputs.changed }}
+      new_version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check if version changed
+        id: version
+        run: |
+          # Get current version from pyproject.toml
+          CURRENT_VERSION=$(grep '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
+          
+          # Get previous version
+          git checkout HEAD~1 pyproject.toml 2>/dev/null || echo "First commit"
+          PREVIOUS_VERSION=$(grep '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/' || echo "0.0.0")
+          git checkout HEAD pyproject.toml
+          
+          echo "Previous version: $PREVIOUS_VERSION"
+          echo "Current version: $CURRENT_VERSION"
+          
+          if [ "$CURRENT_VERSION" != "$PREVIOUS_VERSION" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+  create-tag:
+    name: Create Git Tag
+    needs: check-version
+    if: needs.check-version.outputs.version_changed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: egekaya1/GitSimulator
+
+      - name: Create and push tag
+        run: |
+          VERSION="${{ needs.check-version.outputs.new_version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "v$VERSION" -m "Release version $VERSION"
+          git push origin "v$VERSION"
+
+  create-release:
+    name: Create GitHub Release
+    needs: [check-version, create-tag]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract changelog
+        id: changelog
+        run: |
+          VERSION="${{ needs.check-version.outputs.new_version }}"
+          
+          # Extract changelog section for this version
+          CHANGELOG=$(awk "/## \[$VERSION\]/,/## \[/" CHANGELOG.md | sed '$d' || echo "See CHANGELOG.md for details")
+          
+          # Save to file for GitHub release
+          echo "$CHANGELOG" > release_notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ needs.check-version.outputs.new_version }}
+          name: Release v${{ needs.check-version.outputs.new_version }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
