@@ -262,14 +262,27 @@ class GitSimApp(App[None]):  # Provide concrete generic parameter for mypy
             :15
         ]
 
+        # Track which commits have children (not detached)
+        has_children: set[str] = set()
+        for edge in graph.edges:
+            has_children.add(edge[1])  # parent has a child
+
         for commit in sorted_commits:
             branch_labels: list[str] = [
                 name for name, sha in graph.branch_tips.items() if sha == commit.sha
             ]
+
+            # Check if commit is detached (no children and not a branch tip)
+            is_detached = commit.sha not in has_children and not branch_labels
+
             label_str = f" ({', '.join(branch_labels)})" if branch_labels else ""
             head_marker = " <- HEAD" if commit.sha == graph.head_sha else ""
+            detached_marker = " [dim](detached)[/dim]" if is_detached else ""
 
-            lines.append(f"* {commit.short_sha}{label_str}{head_marker} {commit.first_line[:40]}")
+            marker = "*" if not is_detached else "○"
+            lines.append(
+                f"{marker} {commit.short_sha}{label_str}{head_marker}{detached_marker} {commit.first_line[:40]}"
+            )
 
         return "\n".join(lines) if lines else "No commits to display"
 
