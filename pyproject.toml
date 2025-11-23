@@ -1,6 +1,6 @@
 [project]
 name = "gitsimulator"
-version = "1.0.0"
+version = "1.0.1"
 description = "Git simulation and visualization engine - dry run dangerous Git commands with visual feedback before executing"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -52,6 +52,11 @@ dependencies = [
     "dulwich>=0.21.0",
     "rich>=13.0.0",
     "typer>=0.9.0",
+    "textual>=0.40.0",
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "mypy>=1.0",
+    "ruff>=0.1.0",
 ]
 
 [project.urls]
@@ -59,20 +64,6 @@ Homepage = "https://github.com/egekaya1/GitSimulator"
 Repository = "https://github.com/egekaya1/GitSimulator"
 Issues = "https://github.com/egekaya1/GitSimulator/issues"
 Documentation = "https://github.com/egekaya1/GitSimulator#readme"
-
-[project.optional-dependencies]
-dev = [
-    "pytest>=7.0",
-    "pytest-cov>=4.0",
-    "mypy>=1.0",
-    "ruff>=0.1.0",
-]
-tui = [
-    "textual>=0.40.0",
-]
-all = [
-    "gitsimulator[dev,tui]",
-]
 
 [project.scripts]
 git-sim = "git_sim.cli.main:app"
